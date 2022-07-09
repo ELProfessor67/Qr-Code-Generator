@@ -5,69 +5,129 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>QR Code Generator</title>
-</head>
-<style>
-  /* CSS comes here */
-  body {
-    padding: 2rem;
-  }
-  input {
-    padding: 5px;
-    background-color: transparent;
-    border: none;
-    border-bottom: solid 4px #8c52ff;
-    width: 250px;
-    font-size: 16px;
-    outline: none;
-  }
+  <style>
+    /* CSS comes here */
+    *{
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      height: 100vh;
+      padding: 2rem;
+     /* display: flex;
+      justify-content: center;*/
+    }
+    .container
+    {
+      max-width: 500px;
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+    input {
+      padding: 5px;
+      background-color: transparent;
+      border: none;
+      border-bottom: solid 4px #ff24d8;
+      width: 100%;
+      font-size: 16px;
+      outline: none;
+    }
 
-  .qr-btn {
-    background-color: #8c52ff;
-    padding: 8px;
-    color: white;
-    cursor: pointer;
-    border: none;
-    transition: .3s;
-  }
-  .qr-btn:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 1px 10px rgba(0,0,0,.8);
-  }
-</style>
-
-<title>JavaScript QR Code Generator</title>
+    .qr-btn {
+      background-color: #ff24d8;
+      padding: 8px;
+      color: white;
+      cursor: pointer;
+      border: none;
+      transition: .3s;
+    }
+    .qr-btn:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 1px 10px rgba(0,0,0,.8);
+    }
+    #download
+    {
+      text-decoration: none;
+      display: none;
+      width: 7rem;
+      text-align: center;
+    }
+    #qr-code
+    {
+      width: 60%;
+    }
+    @media (min-width: 980px){
+      body
+      {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .container
+      {
+        gap: 1.5rem
+      }
+      input
+      {
+        font-size: 20px;
+        padding: 8px;
+      }
+      h3
+      {
+        font-size: 25px;
+      }
+      #qr-result
+      {
+        width: 75%;
+      }
+    }
+  </style>
 </head>
 <body>
-<h3>QR Code Generator</h3>
-<div>
-<input id="qr-text" type="text" placeholder="Text to generate QR code" />
-</div>
-<br />
-<div>
-<button class="qr-btn" onclick="generateQRCode()">Create QR Code</button>
-</div>
-<br />
-<p id="qr-result"></p>
-<canvas id="qr-code"></canvas>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
-<script>
-  function generateQRCode() {
-    var qrtext = document.getElementById("qr-text").value;
-    if (qrtext.trim().length == 0) {
-      document.getElementById("qr-result").innerText = "Please Enter Some Text.";
-      document.getElementById('qr-code').style.display = "none";
-      return
+  <div class="container">
+    <h3>QR Code Generator</h3>
+    <div>
+      <input id="qr-text" type="text" placeholder="Text to generate QR code" />
+    </div>
+    <div>
+      <button class="qr-btn" id="gen">Create QR Code</button>
+    </div>
+    <br />
+    <p id="qr-result">Please enter some text</p>
+    <canvas id="qr-code"></canvas>
+    <a href="" class="qr-btn" id="download" download>Download</a>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+  <script>
+    const canva = document.getElementById('qr-code');
+    const result = document.getElementById("qr-result");
+    const download = document.getElementById('download');
+    const genBtn = document.getElementById('gen');
+   
+    genBtn.addEventListener("click",generateQRCode);
+   
+    function generateQRCode() {
+      const qrtext = document.getElementById("qr-text").value;
+      if (qrtext.trim().length == 0) {
+        result.innerText = "Please Enter Some Text.";
+        canva.style.display = "none";
+        download.style.display = "none";
+        return
+      }
+      result.innerText = "QR code for " + qrtext +":";
+      canva.style.display = "block";
+      qr = new QRious({
+        element: document.getElementById('qr-code'),
+        foreground: 'black',
+        size: 200,
+        value: qrtext
+      });
+      const img = canva.toDataURL("image/png");
+      download.style.display = "inline";
+      download.href = img;
     }
-    document.getElementById("qr-result").innerText = "QR code for " + qrtext +":";
-    document.getElementById('qr-code').style.display = "block";
-    qr = new QRious({
-    element: document.getElementById('qr-code'),
-    foreground: 'black',
-    size: 200,
-    value: qrtext
-    });
-  }
-</script>
+  </script>
 </body>
 </html>
